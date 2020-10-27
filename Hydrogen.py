@@ -2,22 +2,30 @@ import numpy as np
 
 
 class Hydrogen:
+    """
+    Class for handling all physics-related matter
+    Should make sure quantum numbers nlm are valid,
+    and calculate probability distrubution of electrons
+    """
     def __init__(self, n=1, l=0, m=0):
         self.n = n
         self.l = l
         self.m = m
 
+        # spherical coords
         r = np.linspace(0, 20, 70)
         theta = np.linspace(0, np.pi, 40)
         phi = np.linspace(0, 3 * np.pi / 2, 40)
 
         self.R, self.Theta, self.Phi = np.meshgrid(r, theta, phi)
 
+        # Cartesian coords
         self.x = self.R * np.cos(self.Phi) * np.sin(self.Theta)
         self.y = self.R * np.sin(self.Phi) * np.sin(self.Theta)
         self.z = self.R * np.cos(self.Theta)
 
     def Radial(self):
+        # TODO Generalise for nl
         if self.n == 1:
             R = 2 * np.exp(-self.R)
         elif self.n == 2:
@@ -28,12 +36,14 @@ class Hydrogen:
         return R
 
     def SphericalHarmonics(self):
+        # TODO Generalise for lm
         #Y = - np.sqrt(3 / 8 / np.pi) * np.sin(self.Theta) * np.exp(1j * self.Phi)
         Y = np.sqrt(1 / 4 / np.pi)
         print("|Y| ", np.sum(Y))
         return Y
 
     def __call__(self):
+        """ Returns cartesian coords and wave function """
         psi = self.Radial() * self.SphericalHarmonics()
         # psi /= np.sum(psi) * 2
         print("|psi| ", np.sum(psi))
@@ -42,6 +52,11 @@ class Hydrogen:
         print(sig[2].shape, np.prod(psi.shape))
         return self.x[sig], self.y[sig], self.z[sig], psi[sig]**2
 
+    """
+    Bunch of functions for setting and validating quantum numbers.
+    ! Look absolutely HORRIBLE!!
+    * But works ¯\_(ツ)_/¯
+    """
     def n_inc(self):
         self.n += 1
 
