@@ -31,6 +31,17 @@ class AnchoredInterface(AnchoredOffsetbox):
                 return a, b
         return False, {}
 
+    def copy(self):
+        A = self.area
+        new = AnchoredInterface(A.width, A.height, A.xdescent, A.ydescent)
+        for child in A._children:
+            new.area.add_artist(child)
+        return new
+
+
+    def set_text(self, childno, text):
+        self.area._children[childno].set_text(text)
+
 
 class ClickableArtist(RegPoly):
     """
@@ -78,4 +89,3 @@ Interface.area.add_artist(mBox)
 Interface.area.add_artist(n)
 Interface.area.add_artist(l)
 Interface.area.add_artist(m)
-
