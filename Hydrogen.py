@@ -3,12 +3,7 @@ from scipy.special import assoc_laguerre, lpmv
 from math import factorial as f
 
 
-class Hydrogen:
-    """
-    Class for handling all physics-related matter
-    Should make sure quantum numbers nlm are valid,
-    and calculate probability distrubution of electrons
-    """
+class NLM:
     """
     Bunch of functions for setting and validating quantum numbers.
     ! Look absolutely HORRIBLE!!
@@ -58,7 +53,12 @@ class Hydrogen:
         return self.m
 
 
-class Hydrogen(Hydrogen):
+class Hydrogen(NLM):
+    """
+    Class for handling all physics-related matter
+    Should make sure quantum numbers nlm are valid,
+    and calculate probability distrubution of electrons
+    """
     def __init__(self, n=1, l=0, m=0):
         self.n = n
         self.l = l
