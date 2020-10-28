@@ -103,7 +103,7 @@ class Hydrogen(NLM):
 
     def __call__(self):
         psi = self.Radial() * self.SphericalHarmonics()
-        psisq = psi * np.conj(psi)
+        psisq = np.real(psi * np.conj(psi))
         X = np.where(psisq > self.prob, self.X, 0)
         Y = np.where(psisq > self.prob, self.Y, 0)
         Z = np.where(psisq > self.prob, self.Z, 0)

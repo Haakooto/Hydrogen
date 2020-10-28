@@ -58,6 +58,5 @@ cid = fig.canvas.mpl_connect("key_press_event", key_click)
 cid = fig.canvas.mpl_connect("scroll_event", scroll)
 
 draw()
-tellme("testtest")
 
 plt.show()
