@@ -33,16 +33,17 @@ def mouse_click(event):
 
 
 def key_click(event):
-    if event.key == "b":
-        print(ax.azim)
-        print(ax.elev)
-        print(ax.dist)
-    if event.key == "d":
-        tellme(Hydrogen.prob)
-        draw()
-    if event.key == "n":
-        Interface.area._children[-1].set_text(Hydrogen.m)
-        draw()
+    pass
+#     if event.key == "b":
+#         print(ax.azim)
+#         print(ax.elev)
+#         print(ax.dist)
+#     if event.key == "d":
+#         tellme(Hydrogen.prob)
+#         draw()
+#     if event.key == "n":
+#         Interface.area._children[-1].set_text(Hydrogen.m)
+#         draw()
 
 def scroll(event):
     if event.button == "up":
