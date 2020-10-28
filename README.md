@@ -6,6 +6,8 @@ Lets you navigate the different states by increasing and decreasing the quantum 
 ## Working version is out!
 Looks quite shit, slow as hell (actually matplotlibs problem), and many features to be added later. However, **IT WORKS**.
 
+### Still a work in progress
+
 ## Usage
 Run main.py. Wave function for groundstate appears as black sphere with red in centre. Bright colour means high probability of finding electron here, black is low. Scroll up/down to increase/decrease cut-off value for probability, followed by mouse click to redraw. Click on up and down arrows to change n, l and m.
 
