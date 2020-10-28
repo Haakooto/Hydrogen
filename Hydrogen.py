@@ -1,4 +1,6 @@
 import numpy as np
+from scipy.special import assoc_laguerre, lpmv
+from math import factorial as f
 
 
 class Hydrogen:
@@ -7,56 +9,12 @@ class Hydrogen:
     Should make sure quantum numbers nlm are valid,
     and calculate probability distrubution of electrons
     """
-    def __init__(self, n=1, l=0, m=0):
-        self.n = n
-        self.l = l
-        self.m = m
-
-        # spherical coords
-        r = np.linspace(0, 20, 70)
-        theta = np.linspace(0, np.pi, 40)
-        phi = np.linspace(0, 3 * np.pi / 2, 40)
-
-        self.R, self.Theta, self.Phi = np.meshgrid(r, theta, phi)
-
-        # Cartesian coords
-        self.x = self.R * np.cos(self.Phi) * np.sin(self.Theta)
-        self.y = self.R * np.sin(self.Phi) * np.sin(self.Theta)
-        self.z = self.R * np.cos(self.Theta)
-
-    def Radial(self):
-        # TODO Generalise for nl
-        if self.n == 1:
-            R = 2 * np.exp(-self.R)
-        elif self.n == 2:
-            R = 2 ** -0.5 * (1 - self.R / 2) * np.exp(-self.R / 2)
-        else:
-            R = 2 / 3 / np.sqrt(3) * (1 - 2 / 3 * self.R + 2/27 * self.R ** 2) * np.exp(-self.R / 3)
-        print("|R| ", np.sum(R))
-        return R
-
-    def SphericalHarmonics(self):
-        # TODO Generalise for lm
-        #Y = - np.sqrt(3 / 8 / np.pi) * np.sin(self.Theta) * np.exp(1j * self.Phi)
-        Y = np.sqrt(1 / 4 / np.pi)
-        print("|Y| ", np.sum(Y))
-        return Y
-
-    def __call__(self):
-        """ Returns cartesian coords and wave function """
-        psi = self.Radial() * self.SphericalHarmonics()
-        # psi /= np.sum(psi) * 2
-        print("|psi| ", np.sum(psi))
-        print("max psi ", np.max(psi ** 2))
-        sig = np.where(psi ** 2 > 0.0005)
-        print(sig[2].shape, np.prod(psi.shape))
-        return self.x[sig], self.y[sig], self.z[sig], psi[sig]**2
-
     """
     Bunch of functions for setting and validating quantum numbers.
     ! Look absolutely HORRIBLE!!
     * But works ¯\_(ツ)_/¯
     """
+
     def n_inc(self):
         self.n += 1
 
@@ -98,3 +56,61 @@ class Hydrogen:
 
     def get_m(self):
         return self.m
+
+
+class Hydrogen(Hydrogen):
+    def __init__(self, n=1, l=0, m=0):
+        self.n = n
+        self.l = l
+        self.m = m
+
+        self.polar()
+
+        self.prob = 0.001
+        self.dprob = 0.0001
+
+    def up(self):
+        self.prob += self.dprob
+
+    def down(self):
+        self.prob -= self.dprob
+
+    def polar(self):
+        r = np.linspace(0, 14, 50)
+        theta = np.linspace(0, np.pi, 50)
+        phi = np.linspace(0, 3 * np.pi / 2, 50)
+
+        self.R, self.Theta, self.Phi = np.meshgrid(r, theta, phi)
+
+        # Cartesian coords
+        self.X = self.R * np.cos(self.Phi) * np.sin(self.Theta)
+        self.Y = self.R * np.sin(self.Phi) * np.sin(self.Theta)
+        self.Z = self.R * np.cos(self.Theta)
+
+    def Radial(self):
+        n, l = self.n, self.l
+        norm = np.sqrt((2 / n) ** 2 * f(n - l - 1) / 2 / n / f(n + l))
+        R = np.exp(-self.R / n) * (2 * self.R / n) ** l
+        L = assoc_laguerre(2 * self.R / n, n - l - 1, 2 * l + 1)
+        return norm * R * L
+
+    def SphericalHarmonics(self):
+        l, m = self.l, self.m
+        norm = np.sqrt((2 * l + 1) * f(l - m) / 4 / np.pi / f(l + m))
+        phase = np.exp(1j * m * self.Phi)
+        L = lpmv(m, l, np.cos(self.Theta))
+        return norm * phase * L
+
+    def __call__(self):
+        psi = self.Radial() * self.SphericalHarmonics()
+        psisq = psi * np.conj(psi)
+        X = np.where(psisq > self.prob, self.X, 0)
+        Y = np.where(psisq > self.prob, self.Y, 0)
+        Z = np.where(psisq > self.prob, self.Z, 0)
+        psisq = np.where(psisq > self.prob, psisq, np.nan)
+        A = np.asarray(np.where(psisq == np.nan, True, False))
+        X = np.ma.masked_array(data=X.flatten(), mask=A.flatten())
+        Y = np.ma.masked_array(Y.flatten(), mask=A.flatten())
+        Z = np.ma.masked_array(Z.flatten(), mask=A.flatten())
+
+        return X, Y, Z, psisq
