@@ -4,7 +4,9 @@ Interactive program for calculating and visualising hydrogen wave functions.
 Lets you navigate the different states by increasing and decreasing the quantum numbers **n**, **l** and **m** on the fly.
 
 ## Working version is out!
-Looks quite shit, slow as hell (actually matplotlibs problem), and many features to be added later. However, **IT WORKS**.
+Looks quite shit, slow as hell (actually matplotlibs problem), and many features to be added later.
+
+However, **IT WORKS**.
 
 ### Still a work in progress
 
