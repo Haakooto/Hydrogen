@@ -38,7 +38,6 @@ class AnchoredInterface(AnchoredOffsetbox):
             new.area.add_artist(child)
         return new
 
-
     def set_text(self, childno, text):
         self.area._children[childno].set_text(text)
 
@@ -74,8 +73,8 @@ lBox = ClickableArtist(Hydrogen.get_l, (35, 30), 4, 10, orientation=pi/4, fill=F
 mBox = ClickableArtist(Hydrogen.get_m, (58, 30), 4, 10, orientation=pi/4, fill=False)
 # n, l, m
 n = mpl.text.Annotation("n", (0.17, 0.44), xycoords=Interface)
-l = mpl.text.Annotation("l", (0.48, 0.43), xycoords=Interface)
-m = mpl.text.Annotation("m", (0.74, 0.44), xycoords=Interface)
+l = mpl.text.Annotation("l", (0.46, 0.44), xycoords=Interface)
+m = mpl.text.Annotation("m", (0.75, 0.44), xycoords=Interface)
 # add all objects above to Interface
 Interface.area.add_artist(nUp)
 Interface.area.add_artist(lUp)
